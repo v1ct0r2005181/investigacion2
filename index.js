@@ -1,68 +1,63 @@
-// Importar las dependencias necesarias
 const express = require('express');
 const app = express();
+const port = 3000;
 
-// Middleware para permitir que la API maneje datos en formato JSON
+// Middleware para parsear JSON
 app.use(express.json());
 
-// Datos simulados (base de datos en memoria)
-let datos = [
-  { id: 1, nombre: 'Elemento 1' },
-  { id: 2, nombre: 'Elemento 2' },
-  { id: 3, nombre: 'Elemento 3' }
+// Datos de ejemplo
+let books = [
+    { id: 1, title: '1984', author: 'George Orwell', year: 1949 },
+    { id: 2, title: 'To Kill a Mockingbird', author: 'Harper Lee', year: 1960 }
 ];
 
-// 1. Obtener todos los datos (GET)
-app.get('/api/datos', (req, res) => {
-  res.json(datos);
+// Obtener todos los libros
+app.get('/books', (req, res) => {
+    res.json(books);
 });
 
-// 2. Obtener un dato específico por ID (GET)
-app.get('/api/datos/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const dato = datos.find(d => d.id === id);
-
-  if (!dato) return res.status(404).json({ error: 'Dato no encontrado' });
-  
-  res.json(dato);
+// Obtener un libro por ID
+app.get('/books/:id', (req, res) => {
+    const book = books.find(b => b.id === parseInt(req.params.id));
+    if (!book) return res.status(404).send('Libro no encontrado.');
+    res.json(book);
 });
 
-// 3. Crear un nuevo dato (POST)
-app.post('/api/datos', (req, res) => {
-  const nuevoDato = {
-    id: datos.length + 1,  // Genera un nuevo ID automáticamente
-    nombre: req.body.nombre
-  };
-  
-  datos.push(nuevoDato);
-  res.status(201).json(nuevoDato);  // Devuelve el nuevo dato creado con un código de estado 201
+// Crear un nuevo libro
+app.post('/books', (req, res) => {
+    const { title, author, year } = req.body;
+    const newBook = {
+        id: books.length + 1,
+        title,
+        author,
+        year
+    };
+    books.push(newBook);
+    res.status(201).json(newBook);
 });
 
-// 4. Actualizar un dato existente (PUT)
-app.put('/api/datos/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const dato = datos.find(d => d.id === id);
+// Actualizar un libro
+app.put('/books/:id', (req, res) => {
+    const book = books.find(b => b.id === parseInt(req.params.id));
+    if (!book) return res.status(404).send('Libro no encontrado.');
 
-  if (!dato) return res.status(404).json({ error: 'Dato no encontrado' });
+    const { title, author, year } = req.body;
+    book.title = title || book.title;
+    book.author = author || book.author;
+    book.year = year || book.year;
 
-  // Actualiza el nombre del dato
-  dato.nombre = req.body.nombre;
-  res.json(dato);
+    res.json(book);
 });
 
-// 5. Eliminar un dato (DELETE)
-app.delete('/api/datos/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = datos.findIndex(d => d.id === id);
+// Eliminar un libro
+app.delete('/books/:id', (req, res) => {
+    const bookIndex = books.findIndex(b => b.id === parseInt(req.params.id));
+    if (bookIndex === -1) return res.status(404).send('Libro no encontrado.');
 
-  if (index === -1) return res.status(404).json({ error: 'Dato no encontrado' });
-
-  const datoEliminado = datos.splice(index, 1);
-  res.json(datoEliminado);
+    books.splice(bookIndex, 1);
+    res.status(204).send();
 });
 
-// Escuchar en el puerto 3000
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
+app.listen(port, () => {
+    console.log(`Servidor corriendo en http://localhost:${port}`);
 });
