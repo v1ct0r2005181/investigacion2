@@ -6,55 +6,55 @@ const port = 3000;
 app.use(express.json());
 
 // Datos de ejemplo
-let books = [
-    { id: 1, title: '1984', author: 'George Orwell', year: 1949 },
-    { id: 2, title: 'To Kill a Mockingbird', author: 'Harper Lee', year: 1960 }
+let students = [
+    { id: 1, name: 'John Doe', age: 20, major: 'Computer Science' },
+    { id: 2, name: 'Jane Smith', age: 22, major: 'Mathematics' }
 ];
 
-// Obtener todos los libros
-app.get('/books', (req, res) => {
-    res.json(books);
+// Obtener todos los estudiantes
+app.get('/students', (req, res) => {
+    res.json(students);
 });
 
-// Obtener un libro por ID
-app.get('/books/:id', (req, res) => {
-    const book = books.find(b => b.id === parseInt(req.params.id));
-    if (!book) return res.status(404).send('Libro no encontrado.');
-    res.json(book);
+// Obtener un estudiante por ID
+app.get('/students/:id', (req, res) => {
+    const student = students.find(s => s.id === parseInt(req.params.id));
+    if (!student) return res.status(404).send('Estudiante no encontrado.');
+    res.json(student);
 });
 
-// Crear un nuevo libro
-app.post('/books', (req, res) => {
-    const { title, author, year } = req.body;
-    const newBook = {
-        id: books.length + 1,
-        title,
-        author,
-        year
+// Crear un nuevo estudiante
+app.post('/students', (req, res) => {
+    const { name, age, major } = req.body;
+    const newStudent = {
+        id: students.length + 1,
+        name,
+        age,
+        major
     };
-    books.push(newBook);
-    res.status(201).json(newBook);
+    students.push(newStudent);
+    res.status(201).json(newStudent);
 });
 
-// Actualizar un libro
-app.put('/books/:id', (req, res) => {
-    const book = books.find(b => b.id === parseInt(req.params.id));
-    if (!book) return res.status(404).send('Libro no encontrado.');
+// Actualizar un estudiante
+app.put('/students/:id', (req, res) => {
+    const student = students.find(s => s.id === parseInt(req.params.id));
+    if (!student) return res.status(404).send('Estudiante no encontrado.');
 
-    const { title, author, year } = req.body;
-    book.title = title || book.title;
-    book.author = author || book.author;
-    book.year = year || book.year;
+    const { name, age, major } = req.body;
+    student.name = name || student.name;
+    student.age = age || student.age;
+    student.major = major || student.major;
 
-    res.json(book);
+    res.json(student);
 });
 
-// Eliminar un libro
-app.delete('/books/:id', (req, res) => {
-    const bookIndex = books.findIndex(b => b.id === parseInt(req.params.id));
-    if (bookIndex === -1) return res.status(404).send('Libro no encontrado.');
+// Eliminar un estudiante
+app.delete('/students/:id', (req, res) => {
+    const studentIndex = students.findIndex(s => s.id === parseInt(req.params.id));
+    if (studentIndex === -1) return res.status(404).send('Estudiante no encontrado.');
 
-    books.splice(bookIndex, 1);
+    students.splice(studentIndex, 1);
     res.status(204).send();
 });
 
