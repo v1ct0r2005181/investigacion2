@@ -5,10 +5,15 @@ const port = 3000;
 // Middleware para parsear JSON
 app.use(express.json());
 
+// Ruta para la raíz
+app.get('/', (req, res) => {
+    res.send('Bienvenido a la API de estudiantes!');
+});
+
 // Datos de ejemplo
 let students = [
-    { id: 1, name: 'John Doe', age: 20, major: 'Computer Science' },
-    { id: 2, name: 'Jane Smith', age: 22, major: 'Mathematics' }
+    { id: 1, name: 'Victor Rivas', age: 18, major: 'Desarollo de software' },
+    { id: 2, name: 'Josue Mejia', age: 18, major: 'Desarollo de software' }
 ];
 
 // Obtener todos los estudiantes
